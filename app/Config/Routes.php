@@ -16,3 +16,8 @@ $routes->post('/updateoutlet', 'Outlet::updateOutlet', ["as" => "updateoutlet"])
 $routes->delete('/outlet/(:any)', 'Outlet::deleteOutlet/$1');
 
 $routes->get('/barang', 'Barang::index');
+$routes->get('/barang/add', 'Barang::addBarangView');
+$routes->get('/barang/(:any)', 'Barang::updateBarangView/$1');
+$routes->post('/addbarang', 'Barang::addBarang', ["as" => "addbarang"]);
+$routes->post('/updatebarang', 'Barang::updateBarang', ["as" => "updatebarang"]);
+$routes->delete('/barang/(:any)', 'Barang::deleteBarang/$1');

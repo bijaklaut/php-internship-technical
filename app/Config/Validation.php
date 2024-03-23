@@ -49,4 +49,11 @@ class Validation extends BaseConfig
         'alamat' => 'required',
         'pic' => 'required|max_length[50]',
     ];
+
+    public array $barang = [
+        'id' => 'permit_empty',
+        'kode_barang' => 'required|max_length[10]|is_unique[barang.kode_barang,id,{id}]',
+        'nama_barang' => 'required|max_length[100]|is_unique[barang.nama_barang,id,{id}]',
+        'harga' => 'required|numeric',
+    ];
 }

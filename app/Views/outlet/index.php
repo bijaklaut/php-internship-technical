@@ -45,7 +45,7 @@
                      <form method="POST">
                         <?= csrf_field() ?>
                         <input type="hidden" name="_method" value="DELETE">
-                        <button data-outlet_id="<?= $outlet['id'] ?>" onclick="deleteOutlet()" class="text-sm rounded-md px-3 py-1 bg-red-400">Delete</button>
+                        <button type="button" data-outlet_id="<?= $outlet['id'] ?>" onclick="deleteOutlet()" class="text-sm rounded-md px-3 py-1 bg-red-400">Delete</button>
                      </form>
                   </td>
                </tr>

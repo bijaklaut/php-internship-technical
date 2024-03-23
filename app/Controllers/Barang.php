@@ -23,78 +23,73 @@ class Barang extends BaseController
         return view('barang/index', $data);
     }
 
-    // public function addOutletView(): string
-    // {
-    //     $data = [
-    //         "judul" => "Add Outlet",
-    //         'validation' => \Config\Services::validation()
-    //     ];
+    public function addBarangView(): string
+    {
+        $data = [
+            "judul" => "Tambah Barang",
+        ];
 
-    //     return view('outlet/postoutlet', $data);
-    // }
+        return view('barang/postbarang', $data);
+    }
 
-    // public function updateOutletView($id): string
-    // {
-    //     $data = [
-    //         "judul" => "Update Outlet",
-    //         'outlet' => $this->outletModel->find($id),
-    //         'validation' => \Config\Services::validation()
-    //     ];
+    public function updateBarangView($id): string
+    {
+        $data = [
+            "judul" => "Update Barang",
+            'barang' => $this->barangModel->find($id),
+        ];
 
-    //     if (empty($data["outlet"])) {
-    //         return redirect()->back();
-    //     }
+        if (empty($data["barang"])) {
+            return redirect()->back();
+        }
 
-    //     return view('outlet/postoutlet', $data);
-    // }
+        return view('barang/postbarang', $data);
+    }
 
-    // public function addOutlet()
-    // {
-    //     if (!$this->validateData($this->request->getPost(), 'outlet')) {
-    //         session()->setFlashdata('message', 'Terdapat Error');
-    //         return redirect()->to('outlet/add')->withInput();
-    //         // return view('outlet/postoutlet', [
-    //         //     'judul' => 'Add Outlet',
-    //         //     'errors' => $this->validator->getErrors(),
-    //         //     'inputs' => $this->request->getRawInput()
-    //         // ]);
-    //     } else {
-    //         $valid_data = $this->validator->getValidated();
-    //         $this->outletModel->save([
-    //             'kode_outlet' => $valid_data["kode_outlet"],
-    //             'nama_outlet' => $valid_data["nama_outlet"],
-    //             'alamat' => $valid_data["alamat"],
-    //             'pic' => $valid_data["pic"],
-    //         ]);
-    //         session()->setFlashdata('message', 'Outlet berhasil ditambahkan');
-    //         return redirect()->to('/outlet');
-    //     }
-    // }
+    public function addBarang()
+    {
+        try {
+            if (!$this->validateData($this->request->getPost(), 'barang')) {
+                return redirect()->to('barang/add')->withInput();
+            } else {
+                $valid_data = $this->validator->getValidated();
+                $this->barangModel->save($valid_data);
+                session()->setFlashdata('message', ['success', 'Barang berhasil ditambahkan']);
+                return redirect()->to('/barang');
+            }
+        } catch (\Throwable $th) {
+            session()->setFlashdata('message', ['error', 'Barang gagal ditambahkan']);
+            return redirect()->to('/barang');
+        }
+    }
 
-    // public function updateOutlet()
-    // {
-    //     if (!$this->validateData($this->request->getPost(), 'outlet')) {
-    //         session()->setFlashdata('message', 'Terdapat Error');
-    //         return redirect()->to('outlet/' . $this->request->getPost('id'))->withInput();
-    //         // return view('outlet/postoutlet', [
-    //         //     'judul' => 'Add Outlet',
-    //         //     'errors' => $this->validator->getErrors(),
-    //         //     'inputs' => $this->request->getRawInput()
-    //         // ]);
-    //     } else {
-    //         $valid_data = $this->validator->getValidated();
+    public function updateBarang()
+    {
+        try {
+            if (!$this->validateData($this->request->getPost(), 'barang')) {
+                return redirect()->to('barang/' . $this->request->getPost('id'))->withInput();
+            } else {
+                $valid_data = $this->validator->getValidated();
+                $this->barangModel->save($valid_data);
 
-    //         $this->outletModel->save($valid_data);
+                session()->setFlashdata('message', ['success', 'Barang berhasil diperbaharui']);
+                return redirect()->to('/barang');
+            }
+        } catch (\Throwable $th) {
+            session()->setFlashdata('message', ['error', 'Barang gagal diperbaharui']);
+            return redirect()->to('/barang');
+        }
+    }
 
-    //         session()->setFlashdata('message', 'Outlet berhasil diperbaharui');
-    //         return redirect()->to('/outlet');
-    //     }
-    // }
-
-    // public function deleteOutlet($id)
-    // {
-    //     $this->outletModel->delete($id);
-    //     session()->setFlashdata('message', 'Outlet berhasil dihapus');
-    //     return redirect()->to('/outlet');
-    // }
+    public function deleteBarang($id)
+    {
+        try {
+            $this->barangModel->delete($id);
+            session()->setFlashdata('message', ["success", "Barang berhasil dihapus"]);
+        } catch (\Throwable $th) {
+            session()->setFlashdata('message', ["error", "Barang gagal dihapus"]);
+        } finally {
+            return redirect()->to('/barang');
+        }
+    }
 }

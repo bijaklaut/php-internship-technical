@@ -2,9 +2,9 @@
 <?= $this->section('content'); ?>
 <div class="py-5 w-full max-w-[1024px] mx-auto px-10">
    <?php if (session()->getFlashdata('message')) : ?>
-      <div id="message-toast" class="w-full flex justify-between items-center rounded-md bg-sky-500 p-4">
+      <div id="message-toast" class="w-full flex justify-between items-center rounded-md p-4 <?= (session()->getFlashdata('message')[0] == 'success') ? 'bg-sky-500' : 'bg-red-500' ?>">
          <span>
-            <?= session()->getFlashdata('message') ?>
+            <?= session()->getFlashdata('message')[1] ?>
          </span>
          <button class="text-2xl w-9 h-9 flex items-center justify-center rounded-md hover:bg-black/30 transition-all duration-300" onclick="removeMessage()">
             <svg class="fill-current w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38,14 +38,13 @@
                   <th scope="row"><?= $i ?></th>
                   <td><?= $barang['kode_barang'] ?></td>
                   <td><?= $barang['nama_barang'] ?></td>
-                  <td><?= $barang['alamat'] ?></td>
-                  <td><?= $barang['pic'] ?></td>
+                  <td><?= "Rp. " . number_format($barang['harga'], 0, ',', '.') ?></td>
                   <td class="w-[200px] flex items-center justify-center gap-1">
                      <a href="/barang/<?= $barang['id'] ?>" class="text-sm rounded-md px-3 py-1 bg-green-400">Ubah</a>
                      <form method="POST">
                         <?= csrf_field() ?>
                         <input type="hidden" name="_method" value="DELETE">
-                        <button data-barang_id="<?= $barang['id'] ?>" onclick="deletebarang()" class="text-sm rounded-md px-3 py-1 bg-red-400">Hapus</button>
+                        <button type="button" data-barang_id="<?= $barang['id'] ?>" onclick="deleteBarang()" class="text-sm rounded-md px-3 py-1 bg-red-400">Hapus</button>
                      </form>
                   </td>
                </tr>
