@@ -3,7 +3,11 @@ const deleteOutlet = () => {
    const outlet_id = $(event.target).data("outlet_id");
    $(form).attr("action", "http://localhost:8080/outlet/" + outlet_id);
 
-   if (confirm("Hapus Segmen?")) {
+   if (confirm("Hapus outlet?")) {
       $(form).submit();
    }
+};
+
+const removeMessage = () => {
+   $("#message-toast").hide();
 };
