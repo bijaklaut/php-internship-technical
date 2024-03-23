@@ -18,6 +18,9 @@
       <a href="/outlet">
          Outlet
       </a>
+      <a href="/barang">
+         Barang
+      </a>
    </nav>
    <main id="main" class="container-fluid">
       <?= $this->renderSection('content'); ?>
