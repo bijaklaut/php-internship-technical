@@ -21,6 +21,9 @@
       <a href="/barang">
          Barang
       </a>
+      <a href="/penjualan">
+         Penjualan
+      </a>
    </nav>
    <main id="main" class="container-fluid">
       <?= $this->renderSection('content'); ?>
