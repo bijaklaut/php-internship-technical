@@ -25,3 +25,8 @@ $routes->delete('/barang/(:any)', 'Barang::deleteBarang/$1');
 
 // Penjualan Header
 $routes->get('/penjualan', 'Penjualan::index');
+$routes->get('/penjualan/add', 'Penjualan::addPenjualanView');
+
+// Misc
+$routes->get('/filteredbarangs/(:any)', 'Penjualan::getFilteredBarangs/$1');
+$routes->get('/filteredbarangs', 'Penjualan::getFilteredBarangs');
