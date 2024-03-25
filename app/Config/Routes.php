@@ -25,9 +25,13 @@ $routes->delete('/barang/(:any)', 'Barang::deleteBarang/$1');
 
 // Penjualan Header
 $routes->get('/penjualan', 'Penjualan::index', ['as' => 'penjualan']);
+$routes->get('/penjualan/details', 'Penjualan::details', ['as' => 'details']);
 $routes->get('/penjualan/detail/(:any)', 'Penjualan::detail/$1');
 $routes->get('/penjualan/add', 'Penjualan::addPenjualanView');
+$routes->get('/penjualan/(:any)', 'Penjualan::updatePenjualanView/$1');
 $routes->post('/addpenjualan', 'Penjualan::addPenjualan', ["as" => "addpenjualan"]);
+$routes->post('/updatepenjualan', 'Penjualan::updatePenjualan/$1', ["as" => "updatepenjualan"]);
+$routes->delete('/penjualan/(:any)', 'Penjualan::deletePenjualan/$1');
 
 // Misc
 $routes->get('/filteredbarangs/(:any)', 'Penjualan::getFilteredBarangs/$1');

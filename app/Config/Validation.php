@@ -59,12 +59,12 @@ class Validation extends BaseConfig
 
     public array $raw_penjualan = [
         'id' => 'permit_empty',
+        'no_faktur' => 'permit_empty',
         'tanggal_faktur' => 'required|valid_date',
         'kode_outlet' => 'required|max_length[15]',
         'barang.*' => 'required',
         'qty.*' => 'required',
         'amount' => 'required',
-        'discount' => 'required',
         'ppn' => 'required',
         'total_amount' => 'required',
     ];

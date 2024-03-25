@@ -17,6 +17,19 @@ const deleteBarang = () => {
    }
 };
 
+$(".delete-penjualan").click((event) => {
+   const { target } = event;
+   const form = $(event.target.form)[0];
+   const no_faktur = $(target).data("no_faktur");
+
+   if (
+      confirm("Hapus penjualan? Catatan: Item di dalamnya juga akan dihapus")
+   ) {
+      $(form).attr("action", "http://localhost:8080/penjualan/" + no_faktur);
+      $(form).submit();
+   }
+});
+
 const removeMessage = () => {
    $("#message-toast").hide();
 };
@@ -130,16 +143,22 @@ const debounceFilterBarangs = debounce(filterBarangs, 500);
 
 $(".option-barang").change(barangHandler);
 
-// $(".option-barang").ready(() => {
-//    $(".option-barang").each((i, obj) => {
-//       console.log("this: ", $(`#display-${obj.value}`).hasClass("flex"));
+$(".qty-input").ready(() => {
+   $(".qty-input").each((i, obj) => {
+      if ($(obj).val() > 0) {
+         $(obj.parentElement).removeClass("hidden");
+         $(obj.parentElement).addClass("flex");
 
-//       if ($(`#display-${obj.value}`).hasClass("flex")) {
-//          obj.checked = true;
-//       }
+         $(`#selected-barangs`).removeClass("hidden");
+         $(`#selected-barangs`).addClass("flex");
+      }
+   });
+});
 
-//       if ($(`#display-${obj.value}`).hasClass("hidden")) {
-//          obj.checked = false;
-//       }
-//    });
-// });
+$(".option-barang").ready(() => {
+   $(".option-barang").each((i, obj) => {
+      if ($(obj).data("old")) {
+         obj.checked = true;
+      }
+   });
+});

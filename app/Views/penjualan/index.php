@@ -19,7 +19,10 @@
    <?php endif; ?>
 
    <h2 class="mt-5 mb-10 text-2xl font-semibold"><?= $judul ?></h2>
-   <a class="bg-sky-500 px-5 py-2 my-3 rounded-md text-sm" href="/penjualan/add" role="button">Buat Penjualan</a>
+   <div class="flex gap-5 items-center">
+      <a class="bg-sky-500 px-5 py-2 my-3 rounded-md text-sm" href="/penjualan/add" role="button">Buat Penjualan</a>
+      <a class="bg-sky-500 px-5 py-2 my-3 rounded-md text-sm" href="/penjualan/details" role="button">Lihat Semua Detail</a>
+   </div>
    <?php if (count($penjualans) > 0) : ?>
       <div class="w-full overflow-auto rounded-md">
          <table class="mt-5 bg-white w-full text-black p-10 rounded-md">
@@ -54,11 +57,11 @@
                      <td><?= $jual['edit_user'] ?></td>
                      <td class="w-[200px] flex items-center justify-center gap-1">
                         <a href="/penjualan/detail/<?= $jual['no_faktur'] ?>" class="text-sm rounded-md px-3 py-1 bg-blue-400">Detail</a>
-                        <a href="/penjualan/<?= $jual['id'] ?>" class="text-sm rounded-md px-3 py-1 bg-green-400">Ubah</a>
+                        <a href="/penjualan/<?= $jual['no_faktur'] ?>" class="text-sm rounded-md px-3 py-1 bg-green-400">Ubah</a>
                         <form method="POST">
                            <?= csrf_field() ?>
                            <input type="hidden" name="_method" value="DELETE">
-                           <button type="button" data-penjualan_id="<?= $jual['id'] ?>" onclick="deletePenjualan()" class="text-sm rounded-md px-3 py-1 bg-red-400">Hapus</button>
+                           <button type="button" data-no_faktur="<?= $jual['no_faktur'] ?>" class="text-sm rounded-md px-3 py-1 bg-red-400 delete-penjualan">Hapus</button>
                         </form>
                      </td>
                   </tr>
