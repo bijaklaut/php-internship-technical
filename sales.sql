@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 24, 2024 at 04:13 AM
+-- Generation Time: Mar 25, 2024 at 06:41 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -114,6 +114,15 @@ CREATE TABLE `penjualan_detail` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Dumping data for table `penjualan_detail`
+--
+
+INSERT INTO `penjualan_detail` (`id`, `no_faktur`, `kode_barang`, `qty`, `harga`, `sub_total`, `created_user`, `edit_user`, `created_at`, `updated_at`) VALUES
+(18, 'FAK-202403-001', '002', 1, 8000, 8000, 'admin', 'admin', '2024-03-25 05:31:27', '2024-03-25 05:31:27'),
+(19, 'FAK-202403-001', '003', 1, 9500, 9500, 'admin', 'admin', '2024-03-25 05:31:27', '2024-03-25 05:31:27'),
+(20, 'FAK-202403-002', '002', 10, 8000, 80000, 'admin', 'admin', '2024-03-25 05:31:56', '2024-03-25 05:31:56');
+
 -- --------------------------------------------------------
 
 --
@@ -134,6 +143,14 @@ CREATE TABLE `penjualan_header` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Dumping data for table `penjualan_header`
+--
+
+INSERT INTO `penjualan_header` (`id`, `no_faktur`, `tanggal_faktur`, `kode_outlet`, `amount`, `discount`, `ppn`, `total_amount`, `created_user`, `edit_user`, `created_at`, `updated_at`) VALUES
+(11, 'FAK-202403-001', '2024-03-25', 'TKO-002', 17500, 0, 1750, 17250, 'admin', 'admin', '2024-03-24 22:31:27', '2024-03-24 22:31:27'),
+(12, 'FAK-202403-002', '2024-03-25', 'TKO-004', 80000, 0, 8000, 78000, 'admin', 'admin', '2024-03-24 22:31:56', '2024-03-24 22:31:56');
 
 --
 -- Indexes for dumped tables
@@ -164,9 +181,7 @@ ALTER TABLE `outlet`
 -- Indexes for table `penjualan_detail`
 --
 ALTER TABLE `penjualan_detail`
-  ADD UNIQUE KEY `no_faktur` (`no_faktur`),
-  ADD UNIQUE KEY `kode_barang` (`kode_barang`),
-  ADD KEY `id` (`id`);
+  ADD PRIMARY KEY (`id`) USING BTREE;
 
 --
 -- Indexes for table `penjualan_header`
@@ -201,13 +216,13 @@ ALTER TABLE `outlet`
 -- AUTO_INCREMENT for table `penjualan_detail`
 --
 ALTER TABLE `penjualan_detail`
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `penjualan_header`
 --
 ALTER TABLE `penjualan_header`
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
