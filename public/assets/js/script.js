@@ -21,10 +21,62 @@ const removeMessage = () => {
    $("#message-toast").hide();
 };
 
-const showBarangs = () => {
-   $("#list_barang").toggleClass("flex");
-   $("#list_barang").toggleClass("hidden");
+const barangHandler = (event) => {
+   const { target } = event;
+   const kode_barang = $(target).data("kode_barang");
+   const targets = $("input.option-barang:checked");
+   const qtyInput = $(`#qty-${kode_barang}`)[0];
+
+   if (target.checked) {
+      $(`#display-${kode_barang}`).removeClass("hidden");
+      $(`#display-${kode_barang}`).addClass("flex");
+      qtyInput.value = 1;
+   } else {
+      $(`#display-${kode_barang}`).removeClass("flex");
+      $(`#display-${kode_barang}`).addClass("hidden");
+      qtyInput.value = 0;
+   }
+
+   calculate();
+
+   if (targets.length) {
+      $(`#selected-barangs`).removeClass("hidden");
+      $(`#selected-barangs`).addClass("flex");
+   } else {
+      $(`#selected-barangs`).removeClass("flex");
+      $(`#selected-barangs`).addClass("hidden");
+   }
 };
+
+const calculate = () => {
+   const qtyInputs = $(`.qty-input`);
+   let amount = 0;
+   const discount = $("#discount").val();
+
+   qtyInputs.each((i, obj) => {
+      amount += $(obj).data("harga") * obj.value;
+   });
+
+   let ppn = amount * 0.1;
+
+   let totalAmount = amount + ppn - discount;
+
+   $("#amount").val(amount);
+   $("#ppn").val(ppn);
+   $("#total_amount").val(totalAmount);
+   $("#discount").attr("max", amount);
+};
+
+$(".qty-input").change(calculate);
+$("#discount").change((event) => {
+   const { max, min, value } = event.target;
+   $("#discount").val(Math.min(max, Math.max(min, value)));
+   calculate();
+});
+
+$("#discount").ready(() => {
+   $("discount").attr("max", $("#amount").val());
+});
 
 const debounce = (mainFunction, delay) => {
    // Declare a variable called 'timer' to store the timer ID
@@ -49,11 +101,23 @@ const filterBarangs = () => {
       url: `http://localhost:8080/filteredbarangs/${value}`,
       dataType: "HTML",
       success: (data) => {
-         $("#list_barang").html(data);
-
          if (data.includes("Barang tidak ditemukan")) {
             $("#list_barang").addClass("text-center");
          }
+
+         $("#list_barang").html(data);
+
+         $(".option-barang").each((i, obj) => {
+            if ($(`#display-${obj.value}`).hasClass("flex")) {
+               obj.checked = true;
+            }
+
+            if ($(`#display-${obj.value}`).hasClass("hidden")) {
+               obj.checked = false;
+            }
+         });
+
+         $(".option-barang").change(barangHandler);
       },
       error: () => {
          $("#list_barang").html("Terjadi error");
@@ -64,22 +128,18 @@ const filterBarangs = () => {
 
 const debounceFilterBarangs = debounce(filterBarangs, 500);
 
-$(".option-barang").change((event) => {
-   const { target } = event;
-   const targets = $("input[name='barang']:checked");
-   if (target.checked) {
-      $(`#display-${target.value}`).removeClass("hidden");
-      $(`#display-${target.value}`).addClass("flex");
-   } else {
-      $(`#display-${target.value}`).removeClass("flex");
-      $(`#display-${target.value}`).addClass("hidden");
-   }
+$(".option-barang").change(barangHandler);
 
-   if (targets.length) {
-      $(`#selected-barangs`).removeClass("hidden");
-      $(`#selected-barangs`).addClass("flex");
-   } else {
-      $(`#selected-barangs`).removeClass("flex");
-      $(`#selected-barangs`).addClass("hidden");
-   }
-});
+// $(".option-barang").ready(() => {
+//    $(".option-barang").each((i, obj) => {
+//       console.log("this: ", $(`#display-${obj.value}`).hasClass("flex"));
+
+//       if ($(`#display-${obj.value}`).hasClass("flex")) {
+//          obj.checked = true;
+//       }
+
+//       if ($(`#display-${obj.value}`).hasClass("hidden")) {
+//          obj.checked = false;
+//       }
+//    });
+// });

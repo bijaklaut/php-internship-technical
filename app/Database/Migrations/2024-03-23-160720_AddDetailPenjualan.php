@@ -19,12 +19,10 @@ class AddDetailPenjualan extends Migration
             'no_faktur' => [
                 'type' => 'VARCHAR',
                 'constraint' => 15,
-                'unique' => true
             ],
             'kode_barang' => [
                 'type' => 'VARCHAR',
                 'constraint' => 10,
-                'unique' => true
             ],
             'qty' => [
                 'type' => 'INT',

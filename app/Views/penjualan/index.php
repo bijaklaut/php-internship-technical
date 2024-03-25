@@ -1,6 +1,6 @@
 <?= $this->extend('layout/template'); ?>
 <?= $this->section('content'); ?>
-<div class="py-5 w-full max-w-[1024px] mx-auto px-10">
+<div class="py-5 w-full max-w-[1536px] mx-auto px-20">
    <?php if (session()->getFlashdata('message')) : ?>
       <div id="message-toast" class="w-full flex justify-between items-center rounded-md p-4 <?= (session()->getFlashdata('message')[0] == 'success') ? 'bg-sky-500' : 'bg-red-500' ?>">
          <span>
@@ -21,49 +21,54 @@
    <h2 class="mt-5 mb-10 text-2xl font-semibold"><?= $judul ?></h2>
    <a class="bg-sky-500 px-5 py-2 my-3 rounded-md text-sm" href="/penjualan/add" role="button">Buat Penjualan</a>
    <?php if (count($penjualans) > 0) : ?>
-      <table class="mt-5 bg-white w-full text-black p-10 rounded-md">
-         <thead>
-            <tr class="[&>th]:py-5 [&>th:last]:w-[100px]">
-               <th scope="col">#</th>
-               <th scope="col">No Faktur</th>
-               <th scope="col">Tanggal Faktur</th>
-               <th scope="col">Kode Outlet</th>
-               <th scope="col">Amount</th>
-               <th scope="col">Discount</th>
-               <th scope="col">PPN</th>
-               <th scope="col">Total Amount</th>
-               <th scope="col">Created By</th>
-               <th scope="col">Edit By</th>
-               <th scope="col" class="w-[200px]">Aksi</th>
-            </tr>
-         </thead>
-         <tbody>
-            <?php $i = 1 ?>
-            <?php foreach ($penjualans as $jual) : ?>
-               <tr class="[&>*]:p-3 [&>*]:text-center">
-                  <th scope="row"><?= $i ?></th>
-                  <td><?= $jual['no_faktur'] ?></td>
-                  <td><?= $jual['tanggal_faktur'] ?></td>
-                  <td><?= $jual['kode_outlet'] ?></td>
-                  <td><?= "Rp. " . number_format($jual['amount'], 0, ',', '.') ?></td>
-                  <td><?= "Rp. " . number_format($jual['discount'], 0, ',', '.') ?></td>
-                  <td><?= "Rp. " . number_format($jual['ppn'], 0, ',', '.') ?></td>
-                  <td><?= "Rp. " . number_format($jual['total_amount'], 0, ',', '.') ?></td>
-                  <td class="w-[200px] flex items-center justify-center gap-1">
-                     <a href="/jual/<?= $jual['id'] ?>" class="text-sm rounded-md px-3 py-1 bg-green-400">Ubah</a>
-                     <form method="POST">
-                        <?= csrf_field() ?>
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="button" data-penjualan_id="<?= $jual['id'] ?>" onclick="deletePenjualan()" class="text-sm rounded-md px-3 py-1 bg-red-400">Hapus</button>
-                     </form>
-                  </td>
+      <div class="w-full overflow-auto rounded-md">
+         <table class="mt-5 bg-white w-full text-black p-10 rounded-md">
+            <thead>
+               <tr class="[&>th]:py-5 [&>th]:min-w-[100px] [&>th:last]:w-[100px]">
+                  <th scope="col">#</th>
+                  <th scope="col">No Faktur</th>
+                  <th scope="col">Tanggal Faktur</th>
+                  <th scope="col">Kode Outlet</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Discount</th>
+                  <th scope="col">PPN</th>
+                  <th scope="col">Total Amount</th>
+                  <th scope="col">Created By</th>
+                  <th scope="col">Edit By</th>
+                  <th scope="col" class="w-[200px]">Aksi</th>
                </tr>
-            <?php
-               $i++;
-            endforeach;
-            ?>
-         </tbody>
-      </table>
+            </thead>
+            <tbody>
+               <?php $i = 1 ?>
+               <?php foreach ($penjualans as $jual) : ?>
+                  <tr class="[&>*]:p-3 [&>*]:min-w-[100px] [&>*]:text-center">
+                     <th scope="row"><?= $i ?></th>
+                     <td><?= $jual['no_faktur'] ?></td>
+                     <td><?= $jual['tanggal_faktur'] ?></td>
+                     <td><?= $jual['kode_outlet'] ?></td>
+                     <td><?= "Rp. " . number_format($jual['amount'], 0, ',', '.') ?></td>
+                     <td><?= "Rp. " . number_format($jual['discount'], 0, ',', '.') ?></td>
+                     <td><?= "Rp. " . number_format($jual['ppn'], 0, ',', '.') ?></td>
+                     <td><?= "Rp. " . number_format($jual['total_amount'], 0, ',', '.') ?></td>
+                     <td><?= $jual['created_user'] ?></td>
+                     <td><?= $jual['edit_user'] ?></td>
+                     <td class="w-[200px] flex items-center justify-center gap-1">
+                        <a href="/penjualan/detail/<?= $jual['no_faktur'] ?>" class="text-sm rounded-md px-3 py-1 bg-blue-400">Detail</a>
+                        <a href="/penjualan/<?= $jual['id'] ?>" class="text-sm rounded-md px-3 py-1 bg-green-400">Ubah</a>
+                        <form method="POST">
+                           <?= csrf_field() ?>
+                           <input type="hidden" name="_method" value="DELETE">
+                           <button type="button" data-penjualan_id="<?= $jual['id'] ?>" onclick="deletePenjualan()" class="text-sm rounded-md px-3 py-1 bg-red-400">Hapus</button>
+                        </form>
+                     </td>
+                  </tr>
+               <?php
+                  $i++;
+               endforeach;
+               ?>
+            </tbody>
+         </table>
+      </div>
    <?php else : ?>
       <div class="mt-10 bg-white w-full text-center text-black p-10 rounded-md">Tidak ada data untuk ditampilkan</div>
    <?php endif ?>

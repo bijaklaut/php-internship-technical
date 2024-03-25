@@ -5,19 +5,24 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\PenjualanHeaderModel;
+use App\Models\PenjualanDetailModel;
 use App\Models\OutletModel;
 use App\Models\BarangModel;
+use CodeIgniter\I18n\Time;
+
+use function PHPUnit\Framework\isEmpty;
 
 class Penjualan extends BaseController
 {
-    protected $penjualanHeaderModel, $outletModel, $barangModel;
+    protected $penjualanHeaderModel, $penjualanDetailModel, $outletModel, $barangModel;
     protected $builder, $db;
 
     public function __construct()
     {
         $this->db = \Config\Database::connect();
-        $this->builder = $this->db->table('barang');
+        $this->builder = $this->db->table('penjualan_header');
         $this->penjualanHeaderModel = new PenjualanHeaderModel();
+        $this->penjualanDetailModel = new PenjualanDetailModel();
         $this->outletModel = new OutletModel();
         $this->barangModel = new BarangModel();
     }
@@ -32,6 +37,20 @@ class Penjualan extends BaseController
         return view('penjualan/index', $data);
     }
 
+    public function detail($no_faktur)
+    {
+        $data = [
+            "judul" => "Penjualan - " . $no_faktur,
+            'details' => $this->penjualanDetailModel->where('no_faktur', $no_faktur)->findAll(),
+        ];
+
+        if (!$data['details']) {
+            return redirect('penjualan');
+        }
+
+        return view('penjualan/detail', $data);
+    }
+
     public function addPenjualanView(): string
     {
         $data = [
@@ -41,6 +60,85 @@ class Penjualan extends BaseController
         ];
 
         return view('penjualan/postpenjualan', $data);
+    }
+
+    public function addPenjualan()
+    {
+        if (!$this->validateData($this->request->getPost(), 'raw_penjualan')) {
+            return redirect()->to('penjualan/add')->withInput();
+        }
+
+        $valid_data = $this->validator->getValidated();
+
+        // Generate no_faktur
+        $date = date('Y-m-d', strtotime($valid_data['tanggal_faktur']));
+        $time = Time::parse($date);
+        $month = (int)$time->getMonth() < 10 ? '0' . $time->getMonth() : $time->getMonth();
+        $no_faktur_temp = 'fak-' . $time->getYear() . $month;
+
+        $this->builder->like('no_faktur', $no_faktur_temp);
+        $result = $this->builder->get()->getLastRow();
+        $no_faktur = '';
+
+        // dd($result);
+
+        if (!$result) {
+            $no_faktur = $no_faktur_temp . '-' . '001';
+        } else {
+            $no_faktur = $result->no_faktur;
+            $no_faktur++;
+        }
+
+        $header_data = [
+            'no_faktur' => $no_faktur,
+            'tanggal_faktur' => $valid_data['tanggal_faktur'],
+            'kode_outlet' => $valid_data['kode_outlet'],
+            'amount' => $valid_data['amount'],
+            'discount' => $valid_data['discount'],
+            'ppn' => $valid_data['ppn'],
+            'total_amount' => $valid_data['total_amount'],
+            'created_user' => 'admin',
+            'edit_user' => 'admin',
+        ];
+
+        $barangs = $valid_data['barang'];
+        $qty = $valid_data['qty'];
+        $detail_data_array = [];
+
+        foreach ($barangs as $key => $value) {
+            if ($qty[$key] > 0) {
+                $detail_data = [
+                    'no_faktur' => $no_faktur,
+                    'kode_barang' => $key,
+                    'qty' => $qty[$key],
+                    'harga' => $value,
+                    'sub_total' => $qty[$key] * $value,
+                    'created_user' => 'admin',
+                    'edit_user' => 'admin',
+                ];
+
+                if ($this->validateData($detail_data, 'penjualan_detail')) {
+                    array_push($detail_data_array, $this->validator->getValidated());
+                }
+            }
+        }
+
+        if ($this->validateData($header_data, 'penjualan_header')) {
+            $valid_header = $this->validator->getValidated();
+            $this->penjualanHeaderModel->save($valid_header);
+        }
+
+        $this->builder->resetQuery();
+        $this->builder = $this->db->table('penjualan_detail');
+        $this->builder->insertBatch($detail_data_array);
+
+        session()->setFlashdata('message', ['success', 'Penjualan berhasil ditambahkan']);
+        return redirect()->to('/penjualan');
+        // try {
+        // } catch (\Throwable $th) {
+        //     session()->setFlashdata('message', ['error', 'Penjualan gagal ditambahkan']);
+        //     return redirect()->to('/penjualan/add')->withInput();
+        // }
     }
 
     public function getFilteredBarangs($match = "")

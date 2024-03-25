@@ -22,7 +22,7 @@ helper('form');
          </div>
          <div class="flex flex-col gap-2 my-4">
             <label for="kode_outlet" class="text-white font-semibold">Outlet</label>
-            <select name="kode_outlet" id="kode_outlet" class="py-1 px-2 rounded-md [&>*]:text-sm">
+            <select name="kode_outlet" id="kode_outlet" class="bg-white py-1 px-2 rounded-md [&>*]:text-sm">
                <option value="null" selected disabled>Select outlet</option>
                <?php foreach ($outlets as $outlet) : ?>
                   <option value="<?= $outlet["kode_outlet"] ?>"><?= $outlet["nama_outlet"] . " - " . $outlet["kode_outlet"] ?></option>
@@ -32,14 +32,14 @@ helper('form');
                <?= validation_show_error('kode_outlet') ?>
             </span>
          </div>
-         <div class="flex flex-col gap-2 my-4 relative">
+         <div class="flex flex-col gap-2 my-4 group relative">
             <label for="search_barang" class="text-white font-semibold">Barang</label>
-            <input id="search_barang" type="text" placeholder="Cari barang" class="py-1 px-2 rounded-md" onclick="showBarangs()" onkeyup="debounceFilterBarangs()">
+            <input id="search_barang" type="text" placeholder="Cari barang" class="py-1 px-2 rounded-md peer" onkeyup="debounceFilterBarangs()">
             <?php if (isset($barangs)) : ?>
-               <div id="list_barang" class="w-full absolute -top-14 bg-white hidden flex-col gap-2 max-h-[300px] overflow-y-auto p-2 rounded-md shadow-md">
+               <div id="list_barang" class="w-full bg-white absolute translate-y-[4.5rem] hidden flex-col gap-2 max-h-[300px] overflow-y-auto p-2 rounded-md shadow-md peer-focus:flex hover:flex">
                   <?php foreach ($barangs as $barang) : ?>
                      <label for="<?= 'option-' . $barang["kode_barang"] ?>" class="flex justify-between items-center p-1 text-sm">
-                        <input type="checkbox" name="barang" id="<?= 'option-' . $barang["kode_barang"] ?>" value="<?= $barang["kode_barang"] ?>" class="hidden peer option-barang">
+                        <input type="checkbox" data-kode_barang="<?= $barang["kode_barang"] ?>" name="barang[<?= $barang['kode_barang'] ?>]" id="<?= 'option-' . $barang["kode_barang"] ?>" value="<?= $barang['harga'] ?>" class="hidden peer option-barang">
                         <span><?= $barang["nama_barang"] . " - Rp. " . number_format($barang['harga'], 0, ',', '.') ?></span>
                         <div class="h-5 w-5 rounded-full border flex items-center justify-center text-white border-black/40 transition-all duration-300 peer-checked:bg-sky-500">
                            <svg class="stroke-current h-[14px] w-[14px]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -66,7 +66,8 @@ helper('form');
                <?php foreach ($barangs as $barang) : ?>
                   <div id="<?= 'display-' . $barang['kode_barang'] ?>" class="w-full p-2 rounded-md bg-white hidden justify-between items-center">
                      <span><?= $barang["nama_barang"] . ' - Rp.' . number_format($barang["harga"], 0, ',', '.') ?></span>
-                     <input type="number" min="0" name="qty-<?= $barang["id"] ?>" id="qty-<?= $barang["id"] ?>" value="0" class="w-[80px] py-1 px-2 text-white bg-zinc-800 rounded-md">
+
+                     <input type="number" min="0" data-harga="<?= $barang["harga"] ?>" name="qty[<?= $barang["kode_barang"] ?>]" id="qty-<?= $barang["kode_barang"] ?>" class="w-[80px] py-1 px-2 text-white bg-zinc-800 rounded-md qty-input">
                   </div>
                <?php endforeach ?>
             <?php endif; ?>
@@ -74,7 +75,7 @@ helper('form');
          <div class="grid grid-cols-2 gap-3">
             <div class="flex flex-col gap-2 my-4">
                <label for="discount" class="text-white font-semibold">Discount</label>
-               <input id="discount" type="number" class="py-1 px-2 rounded-md" name="discount" value="<?= old("discount", isset($penjualan) ? $penjualan["discount"] : "") ?>">
+               <input id="discount" min="0" max="0" type="number" class="py-1 px-2 rounded-md" name="discount" value="<?= old("discount", isset($penjualan) ? $penjualan["discount"] : "") ?>">
                <span class="invalid text-sm text-red-500">
                   <?= validation_show_error('discount') ?>
                </span>
@@ -89,7 +90,7 @@ helper('form');
          </div>
          <div class="grid grid-cols-2 gap-3">
             <div class="flex flex-col gap-2 my-4">
-               <label for="ppn" class="text-white font-semibold">PPN</label>
+               <label for="ppn" class="text-white font-semibold">PPN (10%)</label>
                <input readonly id="ppn" type="text" class="py-1 px-2 rounded-md" name="ppn" value="<?= old("ppn", isset($penjualan) ? $penjualan["ppn"] : "") ?>">
                <span class="invalid text-sm text-red-500">
                   <?= validation_show_error('ppn') ?>

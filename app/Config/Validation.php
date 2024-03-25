@@ -56,4 +56,40 @@ class Validation extends BaseConfig
         'nama_barang' => 'required|max_length[100]|is_unique[barang.nama_barang,id,{id}]',
         'harga' => 'required|numeric',
     ];
+
+    public array $raw_penjualan = [
+        'id' => 'permit_empty',
+        'tanggal_faktur' => 'required|valid_date',
+        'kode_outlet' => 'required|max_length[15]',
+        'barang.*' => 'required',
+        'qty.*' => 'required',
+        'amount' => 'required',
+        'discount' => 'required',
+        'ppn' => 'required',
+        'total_amount' => 'required',
+    ];
+
+    public array $penjualan_header = [
+        'id' => 'permit_empty',
+        'no_faktur' => 'required|max_length[15]|is_unique[penjualan_header.no_faktur,id,{id}]',
+        'tanggal_faktur' => 'required|valid_date',
+        'kode_outlet' => 'required|max_length[15]',
+        'amount' => 'required',
+        'discount' => 'required',
+        'ppn' => 'required',
+        'total_amount' => 'required',
+        'created_user' => 'required',
+        'edit_user' => 'required',
+    ];
+
+    public array $penjualan_detail = [
+        'id' => 'permit_empty',
+        'no_faktur' => 'required|max_length[15]',
+        'kode_barang' => 'required|max_length[10]',
+        'qty' => 'required',
+        'harga' => 'required',
+        'sub_total' => 'required',
+        'created_user' => 'required',
+        'edit_user' => 'required',
+    ];
 }
