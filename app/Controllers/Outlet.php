@@ -17,8 +17,8 @@ class Outlet extends BaseController
     {
         $data = [
             "judul" => "Outlet Dashboard",
-            'outlets' => $this->outletModel->findAll(),
-            'validation' => \Config\Services::validation()
+            'outlets' => $this->outletModel->paginate(10),
+            'pager' => $this->outletModel->pager,
         ];
 
         return view('outlet/index', $data);
@@ -28,7 +28,6 @@ class Outlet extends BaseController
     {
         $data = [
             "judul" => "Add Outlet",
-            'validation' => \Config\Services::validation()
         ];
 
         return view('outlet/postoutlet', $data);
@@ -39,7 +38,6 @@ class Outlet extends BaseController
         $data = [
             "judul" => "Update Outlet",
             'outlet' => $this->outletModel->find($id),
-            'validation' => \Config\Services::validation()
         ];
 
         if (empty($data["outlet"])) {
@@ -54,11 +52,6 @@ class Outlet extends BaseController
         if (!$this->validateData($this->request->getPost(), 'outlet')) {
             session()->setFlashdata('message', 'Terdapat Error');
             return redirect()->to('outlet/add')->withInput();
-            // return view('outlet/postoutlet', [
-            //     'judul' => 'Add Outlet',
-            //     'errors' => $this->validator->getErrors(),
-            //     'inputs' => $this->request->getRawInput()
-            // ]);
         } else {
             $valid_data = $this->validator->getValidated();
             $this->outletModel->save([
@@ -76,12 +69,8 @@ class Outlet extends BaseController
     {
         if (!$this->validateData($this->request->getPost(), 'outlet')) {
             session()->setFlashdata('message', 'Terdapat Error');
+
             return redirect()->to('outlet/' . $this->request->getPost('id'))->withInput();
-            // return view('outlet/postoutlet', [
-            //     'judul' => 'Add Outlet',
-            //     'errors' => $this->validator->getErrors(),
-            //     'inputs' => $this->request->getRawInput()
-            // ]);
         } else {
             $valid_data = $this->validator->getValidated();
 
