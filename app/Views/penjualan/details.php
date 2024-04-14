@@ -19,9 +19,14 @@
    <?php endif; ?>
 
    <h2 class="mt-5 mb-10 text-2xl font-semibold"><?= $judul ?></h2>
-
+   <form action="<?= base_url("/penjualan/details") ?>" method="GET">
+      <div class="gap-2 flex my-2 items-center">
+         <input name="search" type="text" class="py-1 px-3 min-w-[300px] rounded-md my-2 text-black" placeholder="Cari penjualan barang">
+         <button type="submit" class="h-8 w-16 bg-sky-400 rounded-md">Cari</button>
+      </div>
+   </form>
    <div class="w-full overflow-auto rounded-md">
-      <table class="mt-5 bg-white w-full text-black p-10 rounded-md">
+      <table class="mb-5 bg-white w-full text-black p-10 rounded-md">
          <thead>
             <tr class="[&>th]:py-5 [&>th]:min-w-[100px]">
                <th scope="col">#</th>
@@ -57,6 +62,7 @@
             ?>
          </tbody>
       </table>
+      <?= $pager->getPageCount() > 1 ? $pager->links('default', 'default') : "" ?>
    </div>
 </div>
 <?= $this->endSection(); ?>

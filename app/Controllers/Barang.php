@@ -15,9 +15,19 @@ class Barang extends BaseController
 
     public function index(): string
     {
+        $dataPerPage = 10;
+        $search = $this->request->getVar("search");
+        $barangs = $this->barangModel->paginate($dataPerPage);
+
+        if ($search) {
+            $barangs = $this->barangModel->like("kode_barang", $search)->orLike("nama_barang", $search)->orLike("harga", $search)->paginate($dataPerPage);
+        }
+
         $data = [
             "judul" => "Barang Dashboard",
-            'barangs' => $this->barangModel->findAll(),
+            'barangs' => $barangs,
+            'pager' => $this->barangModel->pager,
+            'perpage' => $dataPerPage,
         ];
 
         return view('barang/index', $data);

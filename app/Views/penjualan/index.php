@@ -20,12 +20,18 @@
 
    <h2 class="mt-5 mb-10 text-2xl font-semibold"><?= $judul ?></h2>
    <div class="flex gap-5 items-center">
-      <a class="bg-sky-500 px-5 py-2 my-3 rounded-md text-sm" href="/penjualan/add" role="button">Buat Penjualan</a>
-      <a class="bg-sky-500 px-5 py-2 my-3 rounded-md text-sm" href="/penjualan/details" role="button">Lihat Semua Detail</a>
+      <a class="bg-sky-500 px-5 py-2 rounded-md text-sm" href="/penjualan/add" role="button">Buat Penjualan</a>
+      <a class="bg-sky-500 px-5 py-2 rounded-md text-sm" href="/penjualan/details" role="button">Lihat Semua Detail</a>
    </div>
+   <form action="<?= base_url("/penjualan") ?>" method="GET">
+      <div class="gap-2 flex my-2 items-center">
+         <input name="search" type="text" class="py-1 px-3 min-w-[300px] rounded-md my-2 text-black" placeholder="Cari faktur">
+         <button type="submit" class="h-8 w-16 bg-sky-400 rounded-md">Cari</button>
+      </div>
+   </form>
    <?php if (count($penjualans) > 0) : ?>
       <div class="w-full overflow-auto rounded-md">
-         <table class="mt-5 bg-white w-full text-black p-10 rounded-md">
+         <table class="my-5 bg-white w-full text-black p-10 rounded-md">
             <thead>
                <tr class="[&>th]:py-5 [&>th]:min-w-[100px] [&>th:last]:w-[100px]">
                   <th scope="col">#</th>
@@ -45,7 +51,7 @@
                <?php $i = 1 ?>
                <?php foreach ($penjualans as $jual) : ?>
                   <tr class="[&>*]:p-3 [&>*]:min-w-[100px] [&>*]:text-center">
-                     <th scope="row"><?= $i ?></th>
+                     <th scope="row"><?= ($pager->getCurrentPage() - 1) * $perpage + $i ?></th>
                      <td><?= $jual['no_faktur'] ?></td>
                      <td><?= $jual['tanggal_faktur'] ?></td>
                      <td><?= $jual['kode_outlet'] ?></td>
@@ -72,6 +78,7 @@
             </tbody>
          </table>
       </div>
+      <?= $pager->getPageCount() > 1 ? $pager->links('default', 'default') : "" ?>
    <?php else : ?>
       <div class="mt-10 bg-white w-full text-center text-black p-10 rounded-md">Tidak ada data untuk ditampilkan</div>
    <?php endif ?>

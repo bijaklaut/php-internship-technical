@@ -13,12 +13,21 @@ class Outlet extends BaseController
         $this->outletModel = new OutletModel();
     }
 
-    public function index(): string
+    public function index()
     {
+        $dataPerPage = 10;
+        $search = $this->request->getVar("search");
+        $outlet = $this->outletModel->paginate($dataPerPage);
+
+        if ($search) {
+            $outlet = $this->outletModel->like("kode_outlet", $search)->orLike("nama_outlet", $search)->orLike("alamat", $search)->orLike("pic", $search)->paginate($dataPerPage);
+        }
+
         $data = [
             "judul" => "Outlet Dashboard",
-            'outlets' => $this->outletModel->paginate(10),
+            'outlets' => $outlet,
             'pager' => $this->outletModel->pager,
+            'perpage' => $dataPerPage,
         ];
 
         return view('outlet/index', $data);

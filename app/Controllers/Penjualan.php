@@ -26,9 +26,19 @@ class Penjualan extends BaseController
 
     public function index()
     {
+        $dataPerPage = 10;
+        $search = $this->request->getVar('search');
+        $penjualans = $this->penjualanHeaderModel->paginate($dataPerPage);
+
+        if ($search) {
+            $penjualans = $this->penjualanHeaderModel->like("no_faktur", $search)->orLike("tanggal_faktur", $search)->orLike("kode_outlet", $search)->orLike("amount", $search)->orLike("discount", $search)->orLike("ppn", $search)->orLike("total_amount", $search)->paginate($dataPerPage);
+        }
+
         $data = [
             "judul" => "Penjualan Dashboard",
-            'penjualans' => $this->penjualanHeaderModel->findAll(),
+            'penjualans' => $penjualans,
+            'pager' => $this->penjualanHeaderModel->pager,
+            'perpage' => $dataPerPage
         ];
 
         return view('penjualan/index', $data);
@@ -36,9 +46,19 @@ class Penjualan extends BaseController
 
     public function details()
     {
+        $dataPerPage = 10;
+        $search = $this->request->getVar('search');
+        $details = $this->penjualanDetailModel->paginate($dataPerPage);
+
+        if ($search) {
+            $details = $this->penjualanDetailModel->like("no_faktur", $search)->orLike("kode_barang", $search)->orLike("harga", $search)->orLike("sub_total", $search)->paginate($dataPerPage);
+        }
+
         $data = [
             "judul" => "Detail Penjualan",
-            'details' => $this->penjualanDetailModel->findAll(),
+            'details' => $details,
+            'pager' => $this->penjualanDetailModel->pager,
+            'perpage' => $dataPerPage,
         ];
 
         return view('penjualan/details', $data);
